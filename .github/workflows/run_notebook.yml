@@ -1,0 +1,33 @@
+name: Run Jupyter Notebook
+
+on:
+  schedule:
+    - cron: '0 11 * * *'  # Runs at 11:00 AM UTC every day
+  workflow_dispatch:
+
+jobs:
+  run-notebook:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install Jupyter and dependencies
+        run: |
+          pip install jupyter nbconvert
+
+      - name: Run Jupyter Notebook
+        run: |
+          jupyter nbconvert --to notebook --execute "automate_code.ipynb" --output "output.ipynb"
+
+      - name: Upload output notebook
+        uses: actions/upload-artifact@v3
+        with:
+          name: output-notebook
+          path: output.ipynb
