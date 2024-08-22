@@ -18,13 +18,14 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Install Jupyter and dependencies
+      - name: Install dependencies
         run: |
+          pip install -r requirements.txt
           pip install jupyter nbconvert
 
       - name: Run Jupyter Notebook
         run: |
-          jupyter nbconvert --to notebook --execute "Automate_code.ipynb" --output "output.ipynb"
+          jupyter nbconvert --to notebook --execute "automate_code.ipynb" --output "output.ipynb"
 
       - name: Upload output notebook
         uses: actions/upload-artifact@v3
