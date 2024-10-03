@@ -1,34 +1,32 @@
-name: Run Jupyter Notebook
+name: Daily Report Email
 
 on:
   schedule:
-    - cron: '0 11 * * *'  # Runs at 11:00 AM UTC every day
-  workflow_dispatch:
+    # Runs every day at 8:00 AM IST (which is 2:30 AM UTC)
+    - cron: '30 2 * * *'
 
 jobs:
-  run-notebook:
+  send_email_report:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    # Step 1: Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
+    # Step 2: Set up Python 3.9
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install jupyter nbconvert
+    # Step 3: Install dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install simple-salesforce pandas requests opencage geopy
 
-      - name: Run Jupyter Notebook
-        run: |
-          jupyter nbconvert --to notebook --execute "automate_code.ipynb" --output "output.ipynb"
-
-      - name: Upload output notebook
-        uses: actions/upload-artifact@v3
-        with:
-          name: output-notebook
-          path: output.ipynb
+    # Step 4: Run the Python script
+    - name: Run report script
+      run: |
+        python send_report_manager.py
